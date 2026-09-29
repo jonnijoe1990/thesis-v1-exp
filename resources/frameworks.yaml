@@ -3,7 +3,7 @@
 #########################
 
 AutoGluon:
-  version: custom
+  version: 0.8.0-v2.1.3
   description: |
     AutoGluon-Tabular: Unlike existing AutoML frameworks that primarily focus on model/hyperparameter selection,
     AutoGluon-Tabular succeeds by ensembling multiple models and stacking them in multiple layers.
@@ -13,7 +13,7 @@ AutoGluon:
 #    _save_artifacts: ['leaderboard', 'models', 'info']
 
 flaml:
-  version: custom
+  version: 1.2.4-v2.1.3
   description: |
     FLAML is a lightweight Python library that finds accurate machine learning models
     automatically, efficiently and economically. It frees users from selecting learners
@@ -22,7 +22,7 @@ flaml:
   refs: ["https://arxiv.org/pdf/1911.04706.pdf"]
 
 H2OAutoML:
-  version: custom
+  version: 3.40.0.4-v2.1.3
   description: |
     H2O AutoML is a highly scalable, fully-automated, supervised learning algorithm
     which automates the process of training a large selection of candidate models and stacked ensembles within a singlefunction.
