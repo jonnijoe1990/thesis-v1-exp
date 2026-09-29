@@ -13,7 +13,7 @@ for c in constraints:
                 "sap",
                 c,
                 "-t", task,
-                "-m", "docker",
-                "-f", fold_num,
-                "-s", "force"
+                "-m", "local",
+                "-f", fold_num
+                #"-s", "force"
             ])
