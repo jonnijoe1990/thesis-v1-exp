@@ -15,5 +15,5 @@
       - '{root}/csvs/gender_test_2.csv'
       - '{root}/csvs/gender_test_3.csv'
       - '{root}/csvs/gender_test_4.csv'
-    target: gender
+    target: label
   type: classification
