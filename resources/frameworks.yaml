@@ -3,7 +3,7 @@
 #########################
 
 AutoGluon:
-  version: stable
+  version: latest
   description: |
     AutoGluon-Tabular: Unlike existing AutoML frameworks that primarily focus on model/hyperparameter selection,
     AutoGluon-Tabular succeeds by ensembling multiple models and stacking them in multiple layers.
