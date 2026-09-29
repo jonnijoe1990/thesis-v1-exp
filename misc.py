@@ -2,7 +2,7 @@ from db import DB
 from pathlib import Path
 from duckdb import DuckDBPyConnection
 
-db_path = Path(__file__).parent.parent.joinpath("char_data.db").resolve()
+db_path = Path(__file__).parent.joinpath("char_data.db").resolve()
 
 def drop_table_if_exists(con: DuckDBPyConnection, table_name: str):
     con.execute(f"DROP TABLE IF EXISTS {table_name}")

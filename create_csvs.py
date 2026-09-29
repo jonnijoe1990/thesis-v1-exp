@@ -39,7 +39,7 @@ def select_label() -> Label:
     return selected
 
 
-out_dir = Path(__file__).parent.parent.joinpath("csvs")
+out_dir = Path(__file__).parent.joinpath("csvs")
 out_dir.mkdir(exist_ok=True)
 folds = 5
 

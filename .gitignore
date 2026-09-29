@@ -49,3 +49,8 @@ Singularityfile
 !reports/**/*.csv
 !reports/**/*.png
 !docs/img/**/*.png
+
+
+#experiment
+char_data.db
+csvs/
