@@ -52,5 +52,5 @@ Singularityfile
 
 
 #experiment
-char_data.db
+*.db
 csvs/
