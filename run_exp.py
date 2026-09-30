@@ -15,5 +15,6 @@ for c in constraints:
                 c,
                 "-t", task,
                 "-m", "local",
-                "-f", fold_num
+                "-s", "force"
+                "-f", fold_num,
             ])
