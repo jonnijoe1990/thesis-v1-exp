@@ -3,7 +3,7 @@ from run import run
 constraints = ["30m"]
 frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
 task = "gender"
-folds = 5
+folds = 1
 
 for c in constraints:
     for fold_num in range(folds):
