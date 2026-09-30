@@ -5,5 +5,5 @@ run([
     "test",
     "30m",
     "-t", "kc2",
-    "-m", "local"
+    "-m", "docker"
 ])
