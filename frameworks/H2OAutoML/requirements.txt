@@ -4,3 +4,4 @@ future
 colorama>=0.3.8
 packaging
 pandas
+psutil
