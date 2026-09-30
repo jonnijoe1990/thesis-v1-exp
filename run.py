@@ -227,4 +227,8 @@ def run(arguments: Optional[Iterable[str]] = None):
         if args.openml_test_server:
             openml.config.stop_using_configuration_for_example()
 
-        sys.exit(exit_code)
+    return exit_code
+
+
+if __name__ == "__main__":
+    sys.exit(run())
