@@ -1,8 +1,7 @@
 from run import run
 
 constraints = ["30m"]
-#frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
-frameworks = ["H2OAutoML"]
+frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
 task = "gender"
 folds = 1
 
