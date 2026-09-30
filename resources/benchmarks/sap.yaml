@@ -17,3 +17,5 @@
       - '{root}/csvs/gender_test_4.csv'
     target: label
   type: classification
+  metric:
+    - acc
