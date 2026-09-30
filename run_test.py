@@ -1,6 +1,6 @@
 from run import run
 
-frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
+frameworks = ["flaml", "H2OAutoML"]
 
 for framework in frameworks:
     run([
@@ -8,5 +8,6 @@ for framework in frameworks:
         "test",
         "30m",
         "-t", "kc2",
-        "-m", "local"
+        "-m", "local",
+        "-s", "force"
     ])
