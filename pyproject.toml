@@ -1,22 +1,48 @@
-[project]
-name = "automlbenchmark"
-version = "0.1.0"
-requires-python = ">=3.10, <3.11"
-dependencies = [
-    "boto3>=1.9,<2.0",
-    "duckdb>=1.4.5",
-    "filelock>=3.4",
-    "fsspec>=2025.10.0",
-    "liac-arff>=2.5,<3.0",
-    "numpy>=1.24,<2.0",
-    "openml==0.13.1",
-    "pandas>=1.5,<2.0",
-    "pip>=26.0.1",
-    "psutil>=5.4,<6.0",
-    "pyarrow>=11.0",
-    "questionary>=2.1.1",
-    "ruamel-yaml>=0.15,<1.0",
-    "s3fs>=0.4.2",
-    "scikit-learn>=1.0,<2.0",
-    "typing-extensions>=4.0",
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+exclude=["frameworks/TunedRandomForest/custom_validate.py"]
+
+[tool.ruff.lint]
+ignore = [
+    "E402",  # import on top of file: several modules need to set BLAS env before imports
+    "F403",  # forbids *-imports, sort out later
 ]
+exclude = [
+    "amlb_report/**.py",
+]
+
+
+[tool.mypy]
+files=[
+    "amlb/**/*.py"
+]
+python_version = "3.9"
+# Required because the normal usage pattern of namespaces raises [attr-defined] errors.
+# I can't a way to disable [attr-defined] errors for `Namespace` only.
+disable_error_code = "attr-defined"
+#  problem with ruamel: https://github.com/python/mypy/issues/12664
+incremental = false
+
+[tool.coverage.run]
+include=[
+    "tests/**",
+    "amlb/**",
+    "frameworks/shared/**"
+]
+
+# 3rd party libraries without type hints or stubs:
+[[tool.mypy.overrides]]
+module=[
+    "arff",
+    "sklearn.*",
+    "scipy.*",
+]
+ignore_missing_imports=true
+
+[[tool.mypy.overrides]]
+module = "amlb.benchmark"
+disable_error_code = "union-attr"
+# special run-mode script makes some attributes optional,
+# TODO: refactor so that recovery script does not need special runtime or that it doesnt
+# abuse the benchmark class.
