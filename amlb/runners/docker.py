@@ -130,14 +130,13 @@ RUN apt-get -y install curl wget unzip git
 RUN apt-get -y install software-properties-common
 RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN apt-get update
-RUN apt-get -y install python{pyv} python{pyv}-venv python{pyv}-dev
+RUN apt-get -y install python{pyv} python{pyv}-venv python{pyv}-dev python3-pip
 RUN apt-get -y install libhdf5-serial-dev
-RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # aliases for the python system
-ENV SPIP='uv pip --python /bench/venv/bin/python{pyv}'
+ENV SPIP='python{pyv} -m pip'
 ENV SPY='python{pyv}'
 
 # Enforce UTF-8 encoding
@@ -153,9 +152,11 @@ WORKDIR /bench
 
 # We create a virtual environment so that AutoML systems may use their preferred versions of
 # packages that we need to data pre- and postprocessing without breaking it.
+RUN $SPIP install -U pip wheel
 RUN $SPY -m venv venv
-ENV PIP='uv pip --python /bench/venv/bin/python{pyv}'
+ENV PIP='/bench/venv/bin/python{pyv} -m pip'
 ENV PY='/bench/venv/bin/python{pyv} -W ignore'
+RUN $PIP install -U pip wheel
 
 VOLUME /input
 VOLUME /output
@@ -164,8 +165,7 @@ VOLUME /custom
 # Add the AutoML system except files listed in .dockerignore (could also use git clone directly?)
 ADD . /bench/
 
-ENV UV_PROJECT_ENVIRONMENT='/bench/venv'
-RUN uv sync --frozen --no-dev --no-install-project
+RUN (grep -v '^\\s*#' | xargs -L 1 $PIP install --no-cache-dir) < requirements.txt
 
 RUN $PY {script} {framework} -s only
 {custom_commands}
