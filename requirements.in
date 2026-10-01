@@ -16,3 +16,6 @@ pyarrow>=11.0
 # Allow loading datasets from S3
 fsspec
 s3fs
+
+duckdb>=1.4.5
+questionary>=2.1.1
