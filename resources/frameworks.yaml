@@ -11,7 +11,7 @@ AutoGluon:
   refs: ["https://arxiv.org/abs/2003.06505"]
   params:
     save_bag_folds: true
-    presets: high_quality_v150
+    presets: high_quality
     _save_artifacts: ['leaderboard', 'models', 'info']
 
 flaml:
