@@ -11,13 +11,13 @@ AutoGluon:
   refs: ["https://arxiv.org/abs/2003.06505"]
 #    _save_artifacts: ['leaderboard', 'models', 'info']
 
-Autogluon-sbf-high:
+AutoGluon-sbf-high:
   extends: AutoGluon
   params:
     save_bag_folds: true
     presets: high_quality
 
-Autogluon-sbf-high-v150:
+AutoGluon-sbf-high-v150:
   extends: AutoGluon
   params:
     save_bag_folds: true
