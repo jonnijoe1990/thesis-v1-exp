@@ -17,6 +17,18 @@ def select_framework() -> Framework:
     ).ask()
     return selected
 
+def select_constraint() -> str:
+    choices = [
+        Choice(title="5m-test", value="5m-test"),
+        Choice(title="30m", value="30m")
+    ]
+    selected = select(
+        message="Constraint wählen:",
+        choices=choices,
+        instruction="Pfeiltasten, Enter bestätigt"
+    ).ask()
+    return selected
+
 def select_task() -> Task:
     choices = [Choice(title=task, value=task) for task in tasks]
     selected = select(
@@ -40,6 +52,10 @@ def main():
     if (framework is None):
         return
 
+    constraint = select_constraint()
+    if (constraint is None):
+        return
+
     task = select_task()
     if (task is None):
         return
@@ -51,7 +67,7 @@ def main():
     run([
         framework,
         "sap",
-        "5m-test",
+        constraint,
         "-i", str(Path(__file__).parent / "csvs"),
         "-t", task,
         "-m", "docker"
