@@ -9,9 +9,12 @@ AutoGluon:
     AutoGluon-Tabular succeeds by ensembling multiple models and stacking them in multiple layers.
   project: https://auto.gluon.ai
   refs: ["https://arxiv.org/abs/2003.06505"]
+#    _save_artifacts: ['leaderboard', 'models', 'info']
+
+Autogluon-high:
+  extends: AutoGluon
   params:
     presets: high_quality
-#    _save_artifacts: ['leaderboard', 'models', 'info']
 
 flaml:
   version: stable
