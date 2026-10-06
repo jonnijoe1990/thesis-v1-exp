@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal
 from questionary import Choice, select
 from run import run
@@ -38,6 +39,7 @@ def main():
         framework,
         "sap",
         "30m",
+        "-i", str(Path(__file__).parent / "csvs"),
         "-t", task,
         "-m", "docker",
         "-s", "force"

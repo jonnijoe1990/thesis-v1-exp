@@ -5,7 +5,7 @@ project_repository: https://github.com/openml/automlbenchmark#master      # this
                                                                           # https://github.com/openml/automlbenchmark#stable
 
 user_dir:    # where to override settings with a custom config.yaml file and, for example, add custom frameworks, benchmark definitions or framework modules: set by caller (runbenchmark.py).
-input_dir:   # where the datasets are loaded by default: : set by caller (runbenchmark.py).
+input_dir:   # where to find the input datasets, set by caller (runbenchmark.py).
 output_dir:  # where logs and results are saved by default: set by caller (runbenchmark.py).
 root_dir:    # app root dir: set by caller (runbenchmark.py)
 
