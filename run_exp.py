@@ -39,7 +39,8 @@ def main():
         "sap",
         "30m",
         "-t", task,
-        "-m", "local"
+        "-m", "local",
+        "-s", "force"
     ])
 
 if __name__ == "__main__":
