@@ -41,8 +41,7 @@ def main():
         "5m-test",
         "-i", str(Path(__file__).parent / "csvs"),
         "-t", task,
-        "-m", "docker",
-        "-s", "force"
+        "-m", "docker"
     ])
 
 if __name__ == "__main__":
