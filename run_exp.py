@@ -26,6 +26,15 @@ def select_task() -> Task:
     ).ask()
     return selected
 
+def select_s_arg() -> str:
+    choices = [Choice(title="Ja", value="force"), Choice(title="Nein", value="default")]
+    selected = select(
+        message="Docker container neu bauen?",
+        choices=choices,
+        instruction="Pfeiltasten, Enter bestätigt"
+    ).ask()
+    return selected
+
 def main():
     framework = select_framework()
     if (framework is None):
@@ -35,6 +44,10 @@ def main():
     if (task is None):
         return
     
+    force = select_s_arg()
+    if (force is None):
+        return
+
     run([
         framework,
         "sap",
@@ -42,6 +55,7 @@ def main():
         "-i", str(Path(__file__).parent / "csvs"),
         "-t", task,
         "-m", "docker"
+        "-s", force
     ])
 
 if __name__ == "__main__":
