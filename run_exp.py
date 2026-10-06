@@ -4,9 +4,11 @@ from questionary import Choice, select
 from run import run
 
 frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
-tasks = ["gender", "mortality"]
+constraints = ["5m-test", "30m"]
+tasks = ["gender", "mortality", "age", "all"]
 Framework = Literal["AutoGluon", "flaml", "H2OAutoML"]
-Task = Literal["gender", "mortality"]
+Task = Literal["gender", "mortality", "age", "all"]
+Constraint = Literal["5m-test", "30m"]
 
 def select_framework() -> Framework:
     choices = [Choice(title=framework, value=framework) for framework in frameworks]
@@ -17,11 +19,8 @@ def select_framework() -> Framework:
     ).ask()
     return selected
 
-def select_constraint() -> str:
-    choices = [
-        Choice(title="5m-test", value="5m-test"),
-        Choice(title="30m", value="30m")
-    ]
+def select_constraint() -> Constraint:
+    choices = [Choice(title=constraint, value=constraint) for constraint in constraints]
     selected = select(
         message="Constraint wählen:",
         choices=choices,
@@ -64,15 +63,23 @@ def main():
     if (force is None):
         return
 
-    run([
-        framework,
-        "sap",
-        constraint,
-        "-i", str(Path(__file__).parent / "csvs"),
-        "-t", task,
-        "-m", "docker",
-        "-s", force
-    ])
+    def run_experiment(task: Task):
+        run([
+            framework,
+            "sap",
+            constraint,
+            "-i", str(Path(__file__).parent / "csvs"),
+            "-t", task,
+            "-m", "docker",
+            "-s", force
+        ])
+
+    if task != "all":
+        run_experiment(task)
+    else:
+        for t in tasks:
+            if t != "all":
+                run_experiment(t)
 
 if __name__ == "__main__":
     main()
