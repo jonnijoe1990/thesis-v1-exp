@@ -17,4 +17,42 @@
     target: label
   type: classification
   metric:
-    - acc
+    - auc
+
+- name: mortality
+  dataset:
+    train:
+      - '{input}/mortality_train_0.csv'
+      - '{input}/mortality_train_1.csv'
+      - '{input}/mortality_train_2.csv'
+      - '{input}/mortality_train_3.csv'
+      - '{input}/mortality_train_4.csv'
+    test:
+      - '{input}/mortality_test_0.csv'
+      - '{input}/mortality_test_1.csv'
+      - '{input}/mortality_test_2.csv'
+      - '{input}/mortality_test_3.csv'
+      - '{input}/mortality_test_4.csv'
+    target: label
+  type: classification
+  metric:
+    - auc
+
+- name: age
+  dataset:
+    train:
+      - '{input}/age_train_0.csv'
+      - '{input}/age_train_1.csv'
+      - '{input}/age_train_2.csv'
+      - '{input}/age_train_3.csv'
+      - '{input}/age_train_4.csv'
+    test:
+      - '{input}/age_test_0.csv'
+      - '{input}/age_test_1.csv'
+      - '{input}/age_test_2.csv'
+      - '{input}/age_test_3.csv'
+      - '{input}/age_test_4.csv'
+    target: label
+  type: regression
+  metric:
+    - rmse

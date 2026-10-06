@@ -9,7 +9,7 @@ from db import DB
 
 @dataclass
 class Label:
-    name: Literal["gender", "mortality"]
+    name: Literal["gender", "mortality", "age"]
     problem_type: Literal["classification", "regression"]
     sql: str
     exclusions: List[str]
@@ -24,8 +24,14 @@ LABELS: List[Label] = [
     Label(
         "mortality",
         "classification",
-        "SELECT id, (c_datetimeofdeath IS NOT NULL) AS label FROM sap_ish_patient",
-        []
+        "SELECT id, c_datetimeofdeath IS NOT NULL AS label FROM sap_ish_patient",
+        ["base__c_dod", "base__c_entlassungsart"]
+    ),
+    Label(
+        "age",
+        "regression",
+        "SELECT id, c_age AS label FROM sap_ish_fall WHERE c_age IS NOT NULL",
+        ["base__c_age", "base__c_birthdate"]
     )
 ]
 
