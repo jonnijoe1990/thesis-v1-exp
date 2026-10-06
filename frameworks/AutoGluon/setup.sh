@@ -31,7 +31,13 @@ PIP install --upgrade pip
 PIP install uv
 UV="${PY_EXEC_NO_ARGS} -m uv"
 
-DEPENDENCIES='all,skex'
+ARCH=$(uname -m)
+if [[ ${ARCH} == "x86_64" ]]; then
+    DEPENDENCIES='all,skex'
+else
+    DEPENDENCIES='all'
+    echo "Skipping 'skex' install as architecture is not 64-bit intel."
+fi
 
 if [[ "$VERSION" == "stable" ]]; then
     $UV pip install --no-cache-dir -U "${PKG}"
