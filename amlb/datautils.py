@@ -254,7 +254,7 @@ class Encoder(TransformerMixin):
             self.delegate = (
                 LabelBinarizer()
                 if target
-                else OneHotEncoder(sparse=False, handle_unknown="ignore")
+                else OneHotEncoder(sparse_output=False, handle_unknown="ignore")
             )
         elif type == "no-op":
             self.delegate = None
