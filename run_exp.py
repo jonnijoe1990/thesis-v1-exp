@@ -39,7 +39,7 @@ def main():
         "sap",
         "30m",
         "-t", task,
-        "-m", "local",
+        "-m", "docker",
         "-s", "force"
     ])
 
