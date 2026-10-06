@@ -4,12 +4,17 @@ test:
   max_runtime_seconds: 600
   cores: 4
 
+5m:
+  folds: 5
+  cores: 12
+  max_runtime_seconds: 300
+
 30m:
   folds: 5
-  cores: 8
+  cores: 12
   max_runtime_seconds: 1800
 
 1h:
   folds: 5
-  cores: 8
+  cores: 12
   max_runtime_seconds: 3600
