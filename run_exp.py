@@ -39,7 +39,7 @@ def select_task() -> Task:
     return selected
 
 def select_s_arg() -> str:
-    choices = [Choice(title="Ja", value="force"), Choice(title="Nein", value="default")]
+    choices = [Choice(title="Ja", value="force"), Choice(title="Nein", value="auto")]
     selected = select(
         message="Docker container neu bauen?",
         choices=choices,
