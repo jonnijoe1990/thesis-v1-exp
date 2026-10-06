@@ -38,7 +38,7 @@ def main():
     run([
         framework,
         "sap",
-        "30m",
+        "5m-test",
         "-i", str(Path(__file__).parent / "csvs"),
         "-t", task,
         "-m", "docker",
