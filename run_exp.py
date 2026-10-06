@@ -70,7 +70,7 @@ def main():
         constraint,
         "-i", str(Path(__file__).parent / "csvs"),
         "-t", task,
-        "-m", "local",
+        "-m", "docker",
         "-s", force
     ])
 
