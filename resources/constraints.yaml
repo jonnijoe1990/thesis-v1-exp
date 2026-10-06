@@ -1,4 +1,8 @@
 ---
+test:
+  folds: 2
+  max_runtime_seconds: 600
+  cores: 4
 
 30m:
   folds: 5
