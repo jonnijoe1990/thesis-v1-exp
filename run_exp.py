@@ -5,7 +5,7 @@ from run import run
 
 frameworks = ["AutoGluon", "Autogluon-sbf-high-v150", "flaml", "H2OAutoML"]
 tasks = ["gender", "mortality"]
-Framework = Literal["AutoGluon", "flaml", "H2OAutoML"]
+Framework = Literal["AutoGluon", "Autogluon-sbf-high-v150", "flaml", "H2OAutoML"]
 Task = Literal["gender", "mortality"]
 
 def select_framework() -> Framework:
