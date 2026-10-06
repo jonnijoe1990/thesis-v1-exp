@@ -95,9 +95,8 @@ def run(arguments: Optional[Iterable[str]] = None):
     )
 
     log.info(
-        "Running task `%s:%s` on `%s` framework in `%s` mode.",
+        "Running benchmark `%s` on `%s` framework in `%s` mode.",
         args.benchmark,
-        args.task[0],
         args.framework,
         args.mode,
     )
