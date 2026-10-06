@@ -341,7 +341,7 @@ class Encoder(TransformerMixin):
                     self.encoded_type, copy=False
                 )
                 if self._mask_missing:
-                    res[mask] = np.NaN if self.encoded_type is float else None
+                    res[mask] = np.nan if self.encoded_type is float else None
                 return return_value(res)
 
         if self.normalize_fn:
@@ -370,7 +370,7 @@ class Encoder(TransformerMixin):
 def impute_array(
     X_fit: A,
     *X_s: Iterable[A],
-    missing_values: Any = np.NaN,
+    missing_values: Any = np.nan,
     strategy: Literal["mean", "mode", "median", "most_frequent"]
     | Tuple[Literal["constant"], Any] = "mean",
     keep_empty_features: bool = False,
@@ -415,7 +415,7 @@ def impute_array(
 def impute_dataframe(
     X_fit: pd.DataFrame,
     *X_s: Iterable[pd.DataFrame],
-    missing_values: Any = np.NaN,
+    missing_values: Any = np.nan,
     strategy: Literal["mean", "median", "mode"]
     | Tuple[Literal["constant"], Any] = "mean",
 ) -> pd.DataFrame | list[pd.DataFrame]:
@@ -447,7 +447,7 @@ def impute_dataframe(
 def _impute_pd(
     X_fit: pd.DataFrame,
     *X_s: Iterable[pd.DataFrame],
-    missing_values: Any = np.NaN,
+    missing_values: Any = np.nan,
     strategy: Literal["mean", "median", "mode"]
     | Tuple[Literal["constant"], Any]
     | None = None,
