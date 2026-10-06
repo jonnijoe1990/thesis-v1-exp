@@ -5,12 +5,13 @@ ruamel.yaml>=0.15,<1.0
 filelock>=3.4
 typing-extensions>=4.0
 
-numpy>=1.24,<2.0
-pandas>=1.5,<2.0
-openml==0.13.1
-scikit-learn>=1.0,<2.0
+numpy>=2.0.2,<2.1
+pandas>=2.2.2,<2.3
+openml==0.15.1
+scikit-learn>=1.5,<1.6
+scipy>=1.13.1,<1.14
 
-pyarrow>=11.0
+pyarrow>=16,<19
 # tables>=3.6
 
 # Allow loading datasets from S3
