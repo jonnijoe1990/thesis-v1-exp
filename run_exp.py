@@ -3,9 +3,9 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
-frameworks = ["AutoGluon", "AutoGluon-sbf-high-v150", "flaml", "H2OAutoML"]
+frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
 tasks = ["gender", "mortality"]
-Framework = Literal["AutoGluon", "AutoGluon-sbf-high-v150", "flaml", "H2OAutoML"]
+Framework = Literal["AutoGluon", "flaml", "H2OAutoML"]
 Task = Literal["gender", "mortality"]
 
 def select_framework() -> Framework:
