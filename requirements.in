@@ -5,6 +5,7 @@ ruamel.yaml>=0.15,<1.0
 filelock>=3.4
 typing-extensions>=4.0
 
+minio>=7.2.3,<7.2.19
 numpy>=2.0.2,<2.1
 pandas>=2.2.2,<2.3
 openml==0.15.1
