@@ -9,19 +9,10 @@ AutoGluon:
     AutoGluon-Tabular succeeds by ensembling multiple models and stacking them in multiple layers.
   project: https://auto.gluon.ai
   refs: ["https://arxiv.org/abs/2003.06505"]
+    params:
+      save_bag_folds: true
+      presets: high_quality_v150
 #    _save_artifacts: ['leaderboard', 'models', 'info']
-
-AutoGluon-sbf-high:
-  extends: AutoGluon
-  params:
-    save_bag_folds: true
-    presets: high_quality
-
-AutoGluon-sbf-high-v150:
-  extends: AutoGluon
-  params:
-    save_bag_folds: true
-    presets: high_quality_v150
 
 flaml:
   version: stable
