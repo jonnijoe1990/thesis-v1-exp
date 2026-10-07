@@ -3,8 +3,8 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
-frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
-Framework = Literal["AutoGluon", "flaml", "H2OAutoML"]
+frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
+Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
 def select_framework() -> Framework:
     choices = [Choice(title=framework, value=framework) for framework in frameworks]
     selected = select(
@@ -25,8 +25,8 @@ def select_constraint() -> Constraint:
     ).ask()
     return selected
 
-tasks = ["age", "gender", "mortality"]
-Task = Literal["age", "gender", "mortality"]
+tasks = ["age", "gender", "mortality", "all"]
+Task = Literal["age", "gender", "mortality", "all"]
 def select_task() -> Task:
     choices = [Choice(title=task, value=task) for task in tasks]
     selected = select(
@@ -58,26 +58,18 @@ def select_mode() -> Mode:
     ).ask()
     return selected
 
-#def select_fold() -> int:
-#    selected = select(
-#        message="Folds wählen:",
-#        choices=[Choice(title=str(i), value=i) for i in range(5)],
-#        instruction="Pfeiltasten, Enter bestätigt"
-#    ).ask()
-#    return selected
-
 def main():
     framework = select_framework()
     if (framework is None):
-        print("No framework selected. Training all frameworks.")
+        return
 
     constraint = select_constraint()
     if (constraint is None):
-        print("No constraint selected. Using all constraints.")
+        return
 
     task = select_task()
     if (task is None):
-        print("No task selected. Using all tasks.")
+        return
 
     mode = select_mode()
     if (mode is None):
@@ -87,24 +79,25 @@ def main():
     if (s_arg is None):
         return
 
-    def run_experiment(f: Framework, c: Constraint, t: Task = task):
+    def run_experiment(f: Framework, t: Task):
         run([
             f,
             "sap-24g",
-            c,
+            constraint,
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", t,
             "-m", mode,
             "-s", s_arg
         ])
 
+    frameworks.pop()
+    tasks.pop()
+
     for f in frameworks:
-        for t in tasks:
-            for c in constraints:
-                if framework == None or framework == f:
-                    if task == None or task == t:
-                        if (constraint == None and c != "5m-test") or constraint == c:
-                            run_experiment(f, c, t)
+        if framework == "all" or framework == f:
+            for t in tasks:
+                if task == "all" or task == t:
+                    run_experiment(f, t)
 
 if __name__ == "__main__":
     main()
