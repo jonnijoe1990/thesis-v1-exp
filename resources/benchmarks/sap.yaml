@@ -16,7 +16,7 @@
       - '{input}/gender_test_3.csv'
       - '{input}/gender_test_4.csv'
     target: label
-  type: classification
+  type: binary
   metric:
     - auc
 
@@ -35,7 +35,7 @@
       - '{input}/mortality_test_3.csv'
       - '{input}/mortality_test_4.csv'
     target: label
-  type: classification
+  type: binary
   metric:
     - auc
 
