@@ -3,17 +3,8 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
-s_args = ["force", "auto", "only"]
-frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
-constraints = ["5m-test", "5m-12c", "30m-12c"]
-modes = ["docker", "local"]
-tasks = ["age", "gender", "mortality"]
-Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
-Task = Literal["age", "gender", "mortality"]
-Constraint = Literal["5m-test", "5m-12c", "30m-12c"]
-Mode = Literal["docker", "local"]
-SArg = Literal["force", "auto", "only"]
-
+frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
+Framework = Literal["AutoGluon", "flaml", "H2OAutoML"]
 def select_framework() -> Framework:
     choices = [Choice(title=framework, value=framework) for framework in frameworks]
     selected = select(
@@ -23,6 +14,8 @@ def select_framework() -> Framework:
     ).ask()
     return selected
 
+constraints = ["5m-test", "5m-12c", "30m-12c"]
+Constraint = Literal["5m-test", "5m-12c", "30m-12c"]
 def select_constraint() -> Constraint:
     choices = [Choice(title=constraint, value=constraint) for constraint in constraints]
     selected = select(
@@ -32,6 +25,8 @@ def select_constraint() -> Constraint:
     ).ask()
     return selected
 
+tasks = ["age", "gender", "mortality"]
+Task = Literal["age", "gender", "mortality"]
 def select_task() -> Task:
     choices = [Choice(title=task, value=task) for task in tasks]
     selected = select(
@@ -41,6 +36,8 @@ def select_task() -> Task:
     ).ask()
     return selected
 
+s_args = ["force", "auto", "only"]
+SArg = Literal["force", "auto", "only"]
 def select_s_arg() -> SArg:
     choices = [Choice(title=s_arg, value=s_arg) for s_arg in s_args]
     selected = select(
@@ -50,6 +47,8 @@ def select_s_arg() -> SArg:
     ).ask()
     return selected
 
+modes = ["docker", "local"]
+Mode = Literal["docker", "local"]
 def select_mode() -> Mode:
     choices = [Choice(title=mode, value=mode) for mode in modes]
     selected = select(
@@ -59,26 +58,26 @@ def select_mode() -> Mode:
     ).ask()
     return selected
 
-def select_fold() -> int:
-    selected = select(
-        message="Folds wählen:",
-        choices=[Choice(title=str(i), value=i) for i in range(5)],
-        instruction="Pfeiltasten, Enter bestätigt"
-    ).ask()
-    return selected
+#def select_fold() -> int:
+#    selected = select(
+#        message="Folds wählen:",
+#        choices=[Choice(title=str(i), value=i) for i in range(5)],
+#        instruction="Pfeiltasten, Enter bestätigt"
+#    ).ask()
+#    return selected
 
 def main():
     framework = select_framework()
     if (framework is None):
-        return
+        print("No framework selected. Training all frameworks.")
 
     constraint = select_constraint()
     if (constraint is None):
-        return
+        print("No constraint selected. Using all constraints.")
 
     task = select_task()
     if (task is None):
-        return
+        print("No task selected. Using all tasks.")
 
     mode = select_mode()
     if (mode is None):
@@ -88,28 +87,24 @@ def main():
     if (s_arg is None):
         return
 
-    #fold = select_fold()
-    #if (fold is None):
-    #    return
-
-    def run_experiment(f: Framework):
+    def run_experiment(f: Framework, c: Constraint, t: Task = task):
         run([
             f,
             "sap-24g",
-            constraint,
+            c,
             "-i", str(Path(__file__).parent / "csvs"),
-            "-t", task,
+            "-t", t,
             "-m", mode,
             "-s", s_arg
-            #"-f", fold
         ])
 
-    if framework != "all":
-        run_experiment(framework)
-    else:
-        for f in frameworks:
-            if f != "all":
-                run_experiment(f)
+    for f in frameworks:
+        for t in tasks:
+            for c in constraints:
+                if framework == None or framework == f:
+                    if task == None or task == t:
+                        if (constraint == None and c != "5m-test") or constraint == c:
+                            run_experiment(f, c, t)
 
 if __name__ == "__main__":
     main()
