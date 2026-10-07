@@ -4,12 +4,12 @@ from questionary import Choice, select
 from run import run
 
 s_args = ["force", "auto"]
-frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
+frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
 constraints = ["5m-test", "30m"]
 modes = ["docker", "local"]
-tasks = ["age", "gender", "mortality", "all"]
-Framework = Literal["AutoGluon", "flaml", "H2OAutoML"]
-Task = Literal["age", "gender", "mortality", "all"]
+tasks = ["age", "gender", "mortality"]
+Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
+Task = Literal["age", "gender", "mortality"]
 Constraint = Literal["5m-test", "30m"]
 Mode = Literal["docker", "local"]
 SArg = Literal["force", "auto"]
@@ -80,9 +80,9 @@ def main():
     if (s_arg is None):
         return
 
-    def run_experiment(task: Task):
+    def run_experiment(f: Framework):
         run([
-            framework,
+            f,
             "sap",
             constraint,
             "-i", str(Path(__file__).parent / "csvs"),
@@ -91,12 +91,12 @@ def main():
             "-s", s_arg
         ])
 
-    if task != "all":
-        run_experiment(task)
+    if framework != "all":
+        run_experiment(framework)
     else:
-        for t in tasks:
-            if t != "all":
-                run_experiment(t)
+        for f in frameworks:
+            if f != "all":
+                run_experiment(f)
 
 if __name__ == "__main__":
     main()
