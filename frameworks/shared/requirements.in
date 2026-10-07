@@ -1,4 +1,5 @@
 psutil>=5.4
 
-pyarrow>=4.0
+# 17 is the first release built for NumPy 2. Stay below 19, matching the benchmark lock.
+pyarrow>=17,<19
 # tables>=3.6    # if using hdf serializer (let the client choose)

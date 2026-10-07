@@ -34,8 +34,5 @@ else
     PIP install -U -e ${TARGET_DIR}${OPTIONALS}
 fi
 
-# Apply after FLAML so these pins override shared PyArrow 11 and FLAML's own upgrades.
-PIP install --no-cache-dir -U -r "${HERE}/requirements.txt"
-
 PY -c "from flaml import __version__; print(__version__)" >> "${HERE}/.setup/installed"
 echo ${OPTIONALS} >> "${HERE}/.setup/installed"
