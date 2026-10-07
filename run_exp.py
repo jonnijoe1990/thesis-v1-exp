@@ -5,12 +5,12 @@ from run import run
 
 s_args = ["force", "auto"]
 frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
-constraints = ["5m-test", "30m"]
+constraints = ["5m-test", "30m-12c"]
 modes = ["docker", "local"]
 tasks = ["age", "gender", "mortality"]
 Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
 Task = Literal["age", "gender", "mortality"]
-Constraint = Literal["5m-test", "30m"]
+Constraint = Literal["5m-test", "30m-12c"]
 Mode = Literal["docker", "local"]
 SArg = Literal["force", "auto"]
 
@@ -95,13 +95,13 @@ def main():
     def run_experiment(f: Framework):
         run([
             f,
-            "sap",
+            "sap-24g",
             constraint,
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", task,
             "-m", mode,
             "-s", s_arg,
-            "-f", str(fold)
+            "-f", fold
         ])
 
     if framework != "all":

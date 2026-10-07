@@ -29,12 +29,12 @@ test:
   cores: 12
   max_runtime_seconds: 3600
 
-30m-8core:
+30m-8c:
   folds: 5
   cores: 8
   max_runtime_seconds: 1800
 
-1h-8core:
+1h-8c:
   folds: 5
   cores: 8
   max_runtime_seconds: 3600
