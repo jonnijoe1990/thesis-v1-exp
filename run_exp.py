@@ -14,8 +14,8 @@ def select_framework() -> Framework:
     ).ask()
     return selected
 
-constraints = ["5m-test", "5m-12c", "30m-12c"]
-Constraint = Literal["5m-test", "5m-12c", "30m-12c"]
+constraints = ["5m-12c", "30m-12c", "all"]
+Constraint = Literal["5m-12c", "30m-12c", "all"]
 def select_constraint() -> Constraint:
     choices = [Choice(title=constraint, value=constraint) for constraint in constraints]
     selected = select(
@@ -79,22 +79,24 @@ def main():
     if (s_arg is None):
         return
 
-    def run_experiment(f: Framework, t: Task):
+    def run_experiment(f: Framework, c: Constraint, t: Task):
         run([
             f,
             "sap-24g",
-            constraint,
+            c,
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", t,
             "-m", mode,
             "-s", s_arg
         ])
 
-    for f in frameworks:
-        if f != "all" and (framework == "all" or framework == f):
-            for t in tasks:
-                if t != "all" and (task == "all" or task == t):
-                    run_experiment(f, t)
+    for c in constraints:
+        if c != "all" and (constraint == "all" or constraint == c):
+            for f in frameworks:
+                if f != "all" and (framework == "all" or framework == f):
+                    for t in tasks:
+                        if t != "all" and (task == "all" or task == t):
+                            run_experiment(f, c, t)
 
 if __name__ == "__main__":
     main()
