@@ -6,15 +6,15 @@ test:
 
 5m-test:
   folds: 1
-  cores: -1
+  cores: 12
   max_runtime_seconds: 300
 
 30m:
   folds: 5
-  cores: -1
+  cores: 12
   max_runtime_seconds: 1800
 
 1h:
   folds: 5
-  cores: -1
+  cores: 12
   max_runtime_seconds: 3600
