@@ -88,20 +88,20 @@ def main():
     if (s_arg is None):
         return
 
-    fold = select_fold()
-    if (fold is None):
-        return
+    #fold = select_fold()
+    #if (fold is None):
+    #    return
 
     def run_experiment(f: Framework):
         run([
             f,
-            "sap-16g",
+            "sap-24g",
             constraint,
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", task,
             "-m", mode,
-            "-s", s_arg,
-            "-f", fold
+            "-s", s_arg
+            #"-f", fold
         ])
 
     if framework != "all":
