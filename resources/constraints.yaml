@@ -19,6 +19,11 @@ test:
   cores: -1
   max_runtime_seconds: 3600
 
+15m-12c:
+  folds: 5
+  cores: 12
+  max_runtime_seconds: 900
+
 30m-12c:
   folds: 5
   cores: 12
@@ -28,6 +33,11 @@ test:
   folds: 5
   cores: 12
   max_runtime_seconds: 3600
+
+15m-8c:
+  folds: 5
+  cores: 8
+  max_runtime_seconds: 900
 
 30m-8c:
   folds: 5
