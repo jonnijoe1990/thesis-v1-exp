@@ -1,1 +1,3 @@
-pandas<3
+# pandas<3
+# Shared requirements pin PyArrow 11, which was built for NumPy 1.
+pyarrow>=17
