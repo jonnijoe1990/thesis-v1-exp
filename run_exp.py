@@ -3,7 +3,7 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
-s_args = ["force", "auto"]
+s_args = ["force", "auto", "only"]
 frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
 constraints = ["5m-test", "30m-8c", "30m-12c", "15m-8c", "15m-12c"]
 modes = ["docker", "local"]
@@ -12,7 +12,7 @@ Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
 Task = Literal["age", "gender", "mortality"]
 Constraint = Literal["5m-test", "30m-8c", "30m-12c", "15m-8c", "15m-12c"]
 Mode = Literal["docker", "local"]
-SArg = Literal["force", "auto"]
+SArg = Literal["force", "auto", "only"]
 
 def select_framework() -> Framework:
     choices = [Choice(title=framework, value=framework) for framework in frameworks]
