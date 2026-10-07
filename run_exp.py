@@ -3,12 +3,16 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
+s_args = ["force", "auto"]
 frameworks = ["AutoGluon", "flaml", "H2OAutoML"]
 constraints = ["5m-test", "30m"]
+modes = ["docker", "local"]
 tasks = ["gender", "mortality", "age", "all"]
 Framework = Literal["AutoGluon", "flaml", "H2OAutoML"]
 Task = Literal["gender", "mortality", "age", "all"]
 Constraint = Literal["5m-test", "30m"]
+Mode = Literal["docker", "local"]
+SArg = Literal["force", "auto"]
 
 def select_framework() -> Framework:
     choices = [Choice(title=framework, value=framework) for framework in frameworks]
@@ -37,10 +41,19 @@ def select_task() -> Task:
     ).ask()
     return selected
 
-def select_s_arg() -> str:
-    choices = [Choice(title="Ja", value="force"), Choice(title="Nein", value="auto")]
+def select_s_arg() -> SArg:
+    choices = [Choice(title=s_arg, value=s_arg) for s_arg in s_args]
     selected = select(
-        message="Docker container neu bauen?",
+        message="-s arg?",
+        choices=choices,
+        instruction="Pfeiltasten, Enter bestätigt"
+    ).ask()
+    return selected
+
+def select_mode() -> Mode:
+    choices = [Choice(title=mode, value=mode) for mode in modes]
+    selected = select(
+        message="Mode wählen:",
         choices=choices,
         instruction="Pfeiltasten, Enter bestätigt"
     ).ask()
@@ -58,9 +71,13 @@ def main():
     task = select_task()
     if (task is None):
         return
-    
-    force = select_s_arg()
-    if (force is None):
+
+    mode = select_mode()
+    if (mode is None):
+        return
+
+    s_arg = select_s_arg()
+    if (s_arg is None):
         return
 
     def run_experiment(task: Task):
@@ -70,8 +87,8 @@ def main():
             constraint,
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", task,
-            "-m", "docker",
-            "-s", force
+            "-m", mode,
+            "-s", s_arg
         ])
 
     if task != "all":
