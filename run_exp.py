@@ -59,6 +59,14 @@ def select_mode() -> Mode:
     ).ask()
     return selected
 
+def select_fold() -> int:
+    selected = select(
+        message="Folds wählen:",
+        choices=[Choice(title=str(i), value=i) for i in range(5)],
+        instruction="Pfeiltasten, Enter bestätigt"
+    ).ask()
+    return selected
+
 def main():
     framework = select_framework()
     if (framework is None):
@@ -80,6 +88,10 @@ def main():
     if (s_arg is None):
         return
 
+    fold = select_fold()
+    if (fold is None):
+        return
+
     def run_experiment(f: Framework):
         run([
             f,
@@ -88,7 +100,8 @@ def main():
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", task,
             "-m", mode,
-            "-s", s_arg
+            "-s", s_arg,
+            "-f", str(fold)
         ])
 
     if framework != "all":
