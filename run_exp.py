@@ -3,8 +3,8 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
-frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
-Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
+frameworks = ["AutoGluon_hq", "flaml", "H2OAutoML", "all"]
+Framework = Literal["AutoGluon_hq", "flaml", "H2OAutoML", "all"]
 def select_framework() -> Framework:
     choices = [Choice(title=framework, value=framework) for framework in frameworks]
     selected = select(
@@ -90,13 +90,10 @@ def main():
             "-s", s_arg
         ])
 
-    frameworks.pop()
-    tasks.pop()
-
     for f in frameworks:
-        if framework == "all" or framework == f:
+        if f != "all" and (framework == "all" or framework == f):
             for t in tasks:
-                if task == "all" or task == t:
+                if t != "all" and (task == "all" or task == t):
                     run_experiment(f, t)
 
 if __name__ == "__main__":
