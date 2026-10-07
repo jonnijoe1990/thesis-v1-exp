@@ -4,35 +4,29 @@ test:
   max_runtime_seconds: 600
   cores: 4
 
-5m-test:
-  folds: 1
-  cores: 12
+###
+
+5m:
+  folds: 5
+  cores: -1
   max_runtime_seconds: 300
+
+15m:
+  folds: 5
+  cores: -1
+  max_runtime_seconds: 900
 
 30m:
   folds: 5
   cores: -1
   max_runtime_seconds: 1800
 
-1h:
-  folds: 5
-  cores: -1
-  max_runtime_seconds: 3600
+###
 
-15m-12c:
+5m-8c:
   folds: 5
-  cores: 12
-  max_runtime_seconds: 900
-
-30m-12c:
-  folds: 5
-  cores: 12
-  max_runtime_seconds: 1800
-
-1h-12c:
-  folds: 5
-  cores: 12
-  max_runtime_seconds: 3600
+  cores: 8
+  max_runtime_seconds: 300
 
 15m-8c:
   folds: 5
@@ -44,7 +38,19 @@ test:
   cores: 8
   max_runtime_seconds: 1800
 
-1h-8c:
+###
+
+5m-12c:
   folds: 5
-  cores: 8
-  max_runtime_seconds: 3600
+  cores: 12
+  max_runtime_seconds: 300
+
+15m-12c:
+  folds: 5
+  cores: 12
+  max_runtime_seconds: 900
+
+30m-12c:
+  folds: 5
+  cores: 12
+  max_runtime_seconds: 1800
