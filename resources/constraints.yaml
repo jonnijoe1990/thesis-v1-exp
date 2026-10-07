@@ -11,10 +11,30 @@ test:
 
 30m:
   folds: 5
-  cores: 12
+  cores: -1
   max_runtime_seconds: 1800
 
 1h:
   folds: 5
+  cores: -1
+  max_runtime_seconds: 3600
+
+30m-12c:
+  folds: 5
   cores: 12
+  max_runtime_seconds: 1800
+
+1h-12c:
+  folds: 5
+  cores: 12
+  max_runtime_seconds: 3600
+
+30m-8core:
+  folds: 5
+  cores: 8
+  max_runtime_seconds: 1800
+
+1h-8core:
+  folds: 5
+  cores: 8
   max_runtime_seconds: 3600
