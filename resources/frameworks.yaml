@@ -10,7 +10,6 @@ AutoGluon:
   project: https://auto.gluon.ai
   refs: ["https://arxiv.org/abs/2003.06505"]
   params:
-    presets: high_quality_v150
     _save_artifacts: ['leaderboard', 'models', 'info']
 
 flaml:
