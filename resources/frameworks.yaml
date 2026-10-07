@@ -12,6 +12,14 @@ AutoGluon:
   params:
     _save_artifacts: ['leaderboard', 'models', 'info']
 
+AutoGluon_hq:
+  extends: AutoGluon
+  description: |
+    AutoGluon with 'high_quality' preset provides a very strong predictor with 8x+ faster inference speed than 'best_quality'.
+    Refer to https://auto.gluon.ai/stable/tutorials/tabular_prediction/tabular-quickstart.html#presets for a description of the presets.
+  params:
+    presets: high_quality
+
 flaml:
   version: stable
   description: |
