@@ -25,7 +25,7 @@ LABELS: List[Label] = [
         "mortality",
         "classification",
         "SELECT id, c_datetimeofdeath IS NOT NULL AS label FROM sap_ish_patient",
-        ["base__c_dod", "base__c_entlassungsart"]
+        ["base__c_entlassungsart"]
     ),
     Label(
         "age",
