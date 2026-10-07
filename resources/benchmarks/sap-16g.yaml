@@ -1,5 +1,5 @@
 - name: __defaults__
-  max_mem_size_mb: 16384
+  max_mem_size_mb: 16000
 
 - name: gender
   dataset:
