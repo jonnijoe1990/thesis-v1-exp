@@ -14,8 +14,8 @@ def select_framework() -> Framework:
     ).ask()
     return selected
 
-constraints = ["30m-12c", "5m-12c", "all"]
-Constraint = Literal["30m-12c", "5m-12c", "all"]
+constraints = ["30m-12c", "15m-12c", "5m-12c", "all"]
+Constraint = Literal["30m-12c", "15m-12c", "5m-12c", "all"]
 def select_constraint() -> Constraint:
     choices = [Choice(title=constraint, value=constraint) for constraint in constraints]
     selected = select(
