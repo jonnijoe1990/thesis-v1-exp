@@ -41,10 +41,6 @@ _site/
 *.bz2
 *.png
 
-# Singurality files
-Singularityfile
-*.sif
-
 #whitelist
 !reports/**/*.csv
 !reports/**/*.png
