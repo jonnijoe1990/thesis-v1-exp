@@ -3,8 +3,13 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
-frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
-Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
+#frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
+#Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
+
+# TEMP REMOVE AutoGluon
+frameworks = ["flaml", "H2OAutoML", "all"]
+Framework = Literal["flaml", "H2OAutoML", "all"]
+
 def select_framework() -> Framework:
     choices = [Choice(title=framework, value=framework) for framework in frameworks]
     selected = select(
