@@ -21,7 +21,6 @@
   max_runtime_seconds: 600
   cores: 1
   max_mem_size_mb: -1
-  ec2_instance_type: m5.large
 
 
 # local defaults (applying only to tasks defined in this file) can be defined in a task named "__defaults__"

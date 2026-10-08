@@ -146,7 +146,7 @@ def _add_default_setup_cmd(framework, config):
     The new `setup_cmd` will be a list of commands, where each command has the
     directories, package manager and python binary interpolated.
     `_setup_cmd` will be used for setup inside containers.
-    `setup_cmd` will be used when running locally (or on an Amazon image).
+    `setup_cmd` will be used when running locally.
     """
     if "setup_cmd" not in framework:
         framework._setup_cmd = None
@@ -290,7 +290,6 @@ class TaskConstraint:
     max_runtime_seconds: int
     cores: int
     min_vol_size_mb: int | None = None
-    ec2_volume_type: str | None = None
 
 
 @dataclass

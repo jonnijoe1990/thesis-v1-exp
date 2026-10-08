@@ -1,5 +1,5 @@
 """
-**container** module is build on top of **benchmark** module to provide logic to create and run container images (e.g. docker, singularity)
+**container** module is build on top of **benchmark** module to provide logic to create and run container images (docker)
 that are preconfigured with a given automl framework, and that can be used to run a benchmark anywhere.
 The image embeds a version of the automlbenchmark app so that tasks are later run in local mode inside the container,
 providing the same parameters and features allowing to import config and export results through mounted folders.
@@ -13,11 +13,9 @@ import re
 from typing import cast
 
 from ..benchmark import Benchmark, SetupMode
-from ..errors import InvalidStateError
 from ..frameworks.definitions import Framework
 from ..job import Job
 from ..resources import config as rconfig, get as rget
-from ..__version__ import __version__, _dev_version as dev
 
 
 log = logging.getLogger(__name__)
@@ -31,21 +29,14 @@ class ContainerBenchmark(Benchmark):
     framework_install_required = False
 
     @classmethod
-    def image_name(cls, framework_def: Framework, label: str | None = None) -> str:
-        """Determines the image name based on configuration data."""
-        if label is None:
-            label = rget().project_info.branch
-
+    def image_name(cls, framework_def: Framework) -> str:
+        """Image name from the framework definition, without a branch or dev suffix."""
         di = framework_def.image
         author = di.author
         image = di.image if di.image else framework_def.name.lower()
-        tags = [di.tag if di.tag else framework_def.version.lower()]
-        if label not in rconfig().container.ignore_labels:
-            tags.append(label)
-        tag = re.sub(r"([^\w.-])", ".", "-".join(tags))
-        # Some frameworks allow specifying a version by #HASH which would lead to
-        # the tag starting with a '.' which is invalid.
-        tag = tag.lstrip(".")
+        tag = di.tag if di.tag else framework_def.version.lower()
+        # A version like #HASH would make the tag start with '.', which is invalid.
+        tag = re.sub(r"([^\w.-])", ".", tag).lstrip(".")
         return f"{author}/{image}:{tag}"
 
     @abstractmethod
@@ -60,14 +51,11 @@ class ContainerBenchmark(Benchmark):
         self._custom_image_name = rconfig().container.image
         self.minimize_instances = rconfig().container.minimize_instances
         self.container_name = None
-        self.force_branch = rconfig().container.force_branch
         self.custom_commands = ""
         self.image = None
 
-    def _container_image_name(self, label: str | None = None) -> str:
-        return self.image_name(
-            cast(Framework, self.framework_def), label
-        )  # framework only None in AWSBenchmark
+    def _container_image_name(self) -> str:
+        return self.image_name(cast(Framework, self.framework_def))
 
     def _validate(self):
         max_parallel_jobs = rconfig().job_scheduler.max_parallel_jobs
@@ -157,17 +145,9 @@ class ContainerBenchmark(Benchmark):
         raise NotImplementedError
 
     def _find_image(self):
-        images_lookup = (
-            [self._custom_image_name]
-            if self._custom_image_name
-            else [self._container_image_name(dev), self._container_image_name()]
-            if __version__ == dev
-            else [self._container_image_name()]
-        )
-
-        for image in images_lookup:
-            if self._image_exists(image):
-                return image
+        image = self._custom_image_name or self._container_image_name()
+        if image and self._image_exists(image):
+            return image
         return None
 
     def _image_exists(self, image):
@@ -175,60 +155,7 @@ class ContainerBenchmark(Benchmark):
         raise NotImplementedError
 
     def _build_image(self, cache=True):
-        image = self._custom_image_name
-        if self.force_branch:
-            current_branch = rget().git_info.branch
-            create_dev_image = False
-            status = rget().git_info.status
-            if len(status) > 1 or re.search(r"\[(ahead|behind) \d+\]", status[0]):
-                print("Branch status:\n%s", "\n".join(status))
-                force = None
-                while force not in ["y", "n"]:
-                    force = (
-                        input(f"""Branch `{current_branch}` is not clean or up-to-date.
-Do you still want to build the container image? (y/[n]) """).lower()
-                        or "n"
-                    )
-                if force == "n":
-                    raise InvalidStateError(
-                        "The image can't be built as the current branch is not clean or up-to-date. "
-                        "Please switch to the expected `{}` branch, and ensure that it is clean before building the container image.".format(
-                            rget().project_info.branch
-                        )
-                    )
-                create_dev_image = True
-
-            expected_branch = rget().project_info.branch
-            tags = rget().git_info.tags
-            if expected_branch and expected_branch not in tags + [current_branch]:
-                force = None
-                while force not in ["y", "n"]:
-                    force = (
-                        input(f"""Branch `{current_branch}` doesn't match `{expected_branch}` (as required by config.project_repository).
-Do you still want to build the container image? (y/[n]) """).lower()
-                        or "n"
-                    )
-                if force == "n":
-                    raise InvalidStateError(
-                        "The image can't be built as current branch is not tagged as required `{}`. "
-                        "Please switch to the expected tagged branch before building the container image.".format(
-                            expected_branch
-                        )
-                    )
-                create_dev_image = True
-            if create_dev_image and not image:
-                image = self._container_image_name(dev)
-
-        if not image:
-            tags = rget().git_info.tags
-            version_tags = [t for t in tags if re.match(r"v\d+(\d+.)*", t)]
-            if len(version_tags) > 1:
-                raise InvalidStateError(
-                    "The image can't be built as more than one version tag was found."
-                    f"Found tags: {version_tags}"
-                )
-            version_tag = next(iter(version_tags), None)
-            image = self._container_image_name(version_tag)
+        image = self._custom_image_name or self._container_image_name()
         self._run_container_build_command(image, cache)
         return image
 

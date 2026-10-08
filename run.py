@@ -29,11 +29,6 @@ from parse import parser
 # group.add_argument('--no-keep-scores', dest='keep_scores', action='store_false')
 # parser.set_defaults(keep_scores=True)
 
-# removing this command line argument for now: by default, we're using the user default region as defined in ~/aws/config
-#  on top of this, user can now override the aws.region setting in his custom ~/.config/automlbenchmark/config.yaml settings.
-# parser.add_argument('-r', '--region', metavar='aws_region', default=None,
-#                     help="The region on which to run the benchmark when using AWS.")
-
 def run(arguments: Optional[Iterable[str]] = None):
     args = parser.parse_args(arguments)
     script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -164,17 +159,8 @@ def run(arguments: Optional[Iterable[str]] = None):
             bench_cls = amlb.Benchmark
         elif args.mode == "docker":
             bench_cls = amlb.DockerBenchmark
-        elif args.mode == "singularity":
-            bench_cls = amlb.SingularityBenchmark
-        elif args.mode == "aws":
-            bench_cls = amlb.AWSBenchmark
-            # bench = amlb.AWSBenchmark(args.framework, args.benchmark, args.constraint, region=args.region)
-        # elif args.mode == "aws-remote":
-        #     bench = amlb.AWSRemoteBenchmark(args.framework, args.benchmark, args.constraint, region=args.region)
         else:
-            raise ValueError(
-                "`mode` must be one of 'aws', 'docker', 'singularity' or 'local'."
-            )
+            raise ValueError("`mode` must be one of 'docker' or 'local'.")
         bench = bench_cls(**bench_kwargs)
 
         if args.setup == "only":

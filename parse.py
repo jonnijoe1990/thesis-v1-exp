@@ -33,7 +33,7 @@ parser.add_argument(
 parser.add_argument(
     "-m",
     "--mode",
-    choices=["local", "aws", "docker", "singularity"],
+    choices=["local", "docker"],
     default="local",
     help="The mode that specifies how/where the benchmark tasks will be running."
     "\n(default: '%(default)s')",
@@ -99,7 +99,7 @@ parser.add_argument(
     "\nA hard limit is defined by property `job_scheduler.max_parallel_jobs`"
     "\n in `resources/config.yaml`."
     "\nOverride this limit in your custom `config.yaml` file if needed."
-    "\nSupported only in aws mode or container mode (docker, singularity)."
+    "\nSupported only in docker mode."
     "\n(default: %(default)s)",
 )
 parser.add_argument(

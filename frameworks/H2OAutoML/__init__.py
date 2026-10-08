@@ -38,13 +38,3 @@ def docker_commands(*args, setup_cmd=None):
 EXPOSE 54321
 EXPOSE 54322
 """.format(cmd="RUN {}".format(setup_cmd) if setup_cmd is not None else "")
-
-
-# There is no network isolation in Singularity,
-#  so there is no need to map any port.
-# If the process inside the container binds to an IP:port,
-# it will be immediately reachable on the host.
-def singularity_commands(*args, setup_cmd=None):
-    return """
-{cmd}
-""".format(cmd="{}".format(setup_cmd) if setup_cmd is not None else "")

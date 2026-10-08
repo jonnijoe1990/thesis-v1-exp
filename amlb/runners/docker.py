@@ -34,7 +34,6 @@ class DockerBenchmark(ContainerBenchmark):
         self._custom_image_name = rconfig().docker.image
         self.minimize_instances = rconfig().docker.minimize_instances
         self.container_name = "docker"
-        self.force_branch = rconfig().docker.force_branch
         self.custom_commands = (
             self.framework_module.docker_commands(
                 self.framework_def.setup_args, setup_cmd=self.framework_def._setup_cmd

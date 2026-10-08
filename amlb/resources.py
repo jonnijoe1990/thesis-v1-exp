@@ -66,14 +66,6 @@ class Resources:
         log.debug("Extended Python sys.path to user directory: %s.", sys.path)
 
     @cached_property
-    def project_info(self):
-        split_url = self.config.project_repository.split("#", 1)
-        repo = split_url[0]
-        tag = None if len(split_url) == 1 else split_url[1]
-        branch = tag or "master"
-        return Namespace(repo=repo, tag=tag, branch=branch)
-
-    @cached_property
     def git_info(self):
         def git(cmd, defval=None):
             try:
@@ -294,37 +286,6 @@ class Resources:
                     "but task definition is {task}".format(task=str(task))
                 )
 
-        conf = "ec2_instance_type"
-        if task[conf] is None:
-            i_series = config_.aws.ec2.instance_type.series
-            i_map = config_.aws.ec2.instance_type.map
-            if str(task.cores) in i_map:
-                i_size = i_map[str(task.cores)]
-            elif task.cores > 0:
-                supported_cores = list(
-                    map(int, Namespace.dict(i_map).keys() - {"default"})
-                )
-                supported_cores.sort()
-                cores = next((c for c in supported_cores if c >= task.cores), "default")
-                i_size = i_map[str(cores)]
-            else:
-                i_size = i_map.default
-            task[conf] = ".".join([i_series, i_size])
-            log.debug(
-                "Config `{config}` not set for task {name}, using default selection `{value}`.".format(
-                    config=conf, name=task.name, value=task[conf]
-                )
-            )
-
-        conf = "ec2_volume_type"
-        if task[conf] is None:
-            task[conf] = config_.aws.ec2.volume_type
-            log.debug(
-                "Config `{config}` not set for task {name}, using default `{value}`.".format(
-                    config=conf, name=task.name, value=task[conf]
-                )
-            )
-
 
 __INSTANCE__: Resources | None = None
 
@@ -380,12 +341,5 @@ _backward_compatibility_config_rules_ = [
     ),
     TransformRule(
         from_key="monitoring.frequency_seconds", to_key="monitoring.interval_seconds"
-    ),
-    TransformRule(
-        from_key="aws.query_frequency_seconds", to_key="aws.query_interval_seconds"
-    ),
-    TransformRule(
-        from_key="aws.ec2.monitoring.cpu.query_frequency_seconds",
-        to_key="aws.ec2.monitoring.cpu.query_interval_seconds",
     ),
 ]
