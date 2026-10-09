@@ -36,6 +36,14 @@ def select_task() -> Task:
     ).ask()
     return selected
 
+def select_fold() -> int:
+    selected = select(
+        message="Fold wählen:",
+        choices=[Choice(title=str(i), value=i) for i in range(5)] + ["all"],
+        instruction="Pfeiltasten, Enter bestätigt"
+    ).ask()
+    return selected
+
 s_args = ["force", "auto", "only"]
 SArg = Literal["force", "auto", "only"]
 def select_s_arg() -> SArg:
@@ -71,6 +79,10 @@ def main():
     if (task is None):
         return
 
+    fold = select_fold()
+    if (fold is None):
+        return
+
     mode = select_mode()
     if (mode is None):
         return
@@ -80,7 +92,7 @@ def main():
         return
 
     def run_experiment(f: Framework, c: Constraint, t: Task):
-        run([
+        args = [
             f,
             "sap-24g",
             c,
@@ -88,7 +100,10 @@ def main():
             "-t", t,
             "-m", mode,
             "-s", s_arg
-        ])
+        ]
+        if fold != "all":
+            args += ["-f", str(fold)]
+        run(args)
 
     for c in constraints:
         if c != "all" and (constraint == "all" or constraint == c):
