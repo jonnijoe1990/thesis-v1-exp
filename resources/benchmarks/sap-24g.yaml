@@ -58,20 +58,20 @@
   metric:
     - rmse
 
-- length_of_stay:
+- los:
   dataset:
     train:
-      - '{input}/length_of_stay_train_0.csv'
-      - '{input}/length_of_stay_train_1.csv'
-      - '{input}/length_of_stay_train_2.csv'
-      - '{input}/length_of_stay_train_3.csv'
-      - '{input}/length_of_stay_train_4.csv'
+      - '{input}/los_train_0.csv'
+      - '{input}/los_train_1.csv'
+      - '{input}/los_train_2.csv'
+      - '{input}/los_train_3.csv'
+      - '{input}/los_train_4.csv'
     test:
-      - '{input}/length_of_stay_test_0.csv'
-      - '{input}/length_of_stay_test_1.csv'
-      - '{input}/length_of_stay_test_2.csv'
-      - '{input}/length_of_stay_test_3.csv'
-      - '{input}/length_of_stay_test_4.csv'
+      - '{input}/los_test_0.csv'
+      - '{input}/los_test_1.csv'
+      - '{input}/los_test_2.csv'
+      - '{input}/los_test_3.csv'
+      - '{input}/los_test_4.csv'
     target: label
     type: regression
   metric:
