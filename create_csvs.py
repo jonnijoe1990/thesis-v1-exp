@@ -34,7 +34,7 @@ LABELS: List[Label] = [
         ["base__c_age", "base__c_birthdate"]
     ),
     Label(
-        "length_of_stay",
+        "los",
         "regression",
         """SELECT id, EXTRACT(EPOCH FROM (c_entlassung - c_aufnahme)) / 86400.0 AS label
         FROM sap_ish_fall
