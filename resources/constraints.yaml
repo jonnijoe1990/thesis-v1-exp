@@ -4,12 +4,12 @@ test:
   max_runtime_seconds: 600
   cores: 4
 
-5m-test:
-  folds: 1
-  cores: 8
-  max_runtime_seconds: 120
-
 ###
+
+5m-1f:
+  folds: 1
+  cores: -1
+  max_runtime_seconds: 300
 
 5m:
   folds: 5
@@ -28,6 +28,11 @@ test:
 
 ###
 
+5m-8c-1f:
+  folds: 1
+  cores: 8
+  max_runtime_seconds: 300
+
 5m-8c:
   folds: 5
   cores: 8
@@ -44,6 +49,11 @@ test:
   max_runtime_seconds: 1800
 
 ###
+
+5m-12c-1f:
+  folds: 1
+  cores: 12
+  max_runtime_seconds: 300
 
 5m-12c:
   folds: 5
