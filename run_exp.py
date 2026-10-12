@@ -94,7 +94,7 @@ def main():
     def run_experiment(f: Framework, c: Constraint, t: Task):
         args = [
             f,
-            "sap-24g",
+            "sap-16g",
             c,
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", t,
