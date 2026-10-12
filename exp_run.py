@@ -14,8 +14,8 @@ def select_framework() -> Framework:
     ).ask()
     return selected
 
-constraints = ["30m-12c", "15m-12c", "5m-12c", "all"]
-Constraint = Literal["30m-12c", "15m-12c", "5m-12c", "all"]
+constraints = ["60m-12c", "30m-12c", "15m-12c", "5m-12c", "all"]
+Constraint = Literal["60m-12c", "30m-12c", "15m-12c", "5m-12c", "all"]
 def select_constraint() -> Constraint:
     choices = [Choice(title=constraint, value=constraint) for constraint in constraints]
     selected = select(
@@ -25,8 +25,8 @@ def select_constraint() -> Constraint:
     ).ask()
     return selected
 
-tasks = ["age", "gender", "mortality", "all"]
-Task = Literal["age", "gender", "mortality", "all"]
+tasks = ["length_of_stay", "age", "gender", "mortality", "all"]
+Task = Literal["length_of_stay", "age", "gender", "mortality", "all"]
 def select_task() -> Task:
     choices = [Choice(title=task, value=task) for task in tasks]
     selected = select(
@@ -94,7 +94,7 @@ def main():
     def run_experiment(f: Framework, c: Constraint, t: Task):
         args = [
             f,
-            "sap-16g",
+            "sap-24g",
             c,
             "-i", str(Path(__file__).parent / "csvs"),
             "-t", t,
