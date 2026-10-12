@@ -1,4 +1,4 @@
-from db import DB
+from exp_db import DB
 from pathlib import Path
 from duckdb import DuckDBPyConnection
 
