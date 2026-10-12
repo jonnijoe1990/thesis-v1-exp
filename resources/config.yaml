@@ -115,8 +115,6 @@ docker:                        # configuration namespace for docker: it inherits
   <<: *container
   run_extra_options: >-
     --shm-size=2048M
-    --cpus=24
-    --memory=24576m
   run_as: 'default'    # Sets the user inside the docker container (`docker run -u`), one of:
                        #  * 'user': set as `-u $(id -u):$(id -g)`, only on unix systems.
                        #  * 'root': set as `-u 0:0`
