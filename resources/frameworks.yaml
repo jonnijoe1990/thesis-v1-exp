@@ -11,7 +11,6 @@ AutoGluon:
   refs: ["https://arxiv.org/abs/2003.06505"]
   params:
     presets: high_quality_v150
-    refit_full: false
     #_save_artifacts: ['leaderboard', 'models', 'info']
 
 flaml:
