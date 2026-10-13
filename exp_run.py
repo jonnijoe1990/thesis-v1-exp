@@ -97,7 +97,7 @@ def main():
             "sap-24g",
             c,
             "-i", str(Path(__file__).parent / "csvs"),
-            "-t", t,
+            #"-t", t,
             "-m", mode,
             "-s", s_arg
         ]
