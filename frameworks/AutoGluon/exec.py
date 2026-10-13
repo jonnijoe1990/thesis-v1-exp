@@ -50,7 +50,7 @@ def run(dataset, config):
     presets = training_params.get("presets", [])
     presets = presets if isinstance(presets, list) else [presets]
     if (
-        preset_with_refit_full := (set(presets) & {"good_quality", "high_quality"})
+        preset_with_refit_full := (set(presets) & {"good_quality", "high_quality", "high_quality_v150"})
     ) and (time_limit is not None):
         preserve = 0.9
         preset = next(iter(preset_with_refit_full))
