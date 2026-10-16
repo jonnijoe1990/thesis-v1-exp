@@ -16,7 +16,7 @@ import pandas as pd
 
 matplotlib.use("agg")  # no need for tk
 
-from autogluon.tabular import TabularPredictor
+from autogluon.tabular import TabularPredictor, TabularDataset
 from autogluon.core.utils.savers import save_pd, save_pkl, save_json
 from autogluon.core.metrics import get_metric, Scorer
 from autogluon.tabular.version import __version__
@@ -121,7 +121,7 @@ def run(dataset, config):
         if is_classification
         else inference_time_regression
     )
-    test_data = pd.read_csv(test_path)
+    test_data = TabularDataset(test_path)
     inference_times = {}
     if config.measure_inference_time:
         inference_times["file"] = measure_inference_times(

@@ -19,14 +19,14 @@ def run_autogluon_tabular(dataset: Dataset, config: TaskConfig):
     from frameworks.shared.caller import run_in_venv
 
     data = dict(
-        train=dict(path=dataset.train.path),
-        test=dict(path=dataset.test.path),
+        train=dict(path=dataset.train.data_path("parquet")),
+        test=dict(path=dataset.test.data_path("parquet")),
         target=dict(name=dataset.target.name, classes=dataset.target.values),
         problem_type=dataset.type.name,  # AutoGluon problem_type is using same names as amlb.data.DatasetType
     )
     if config.measure_inference_time:
         data["inference_subsample_files"] = dataset.inference_subsample_files(
-            fmt=dataset.train.format
+            fmt="parquet"
         )
 
     return run_in_venv(
