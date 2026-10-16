@@ -97,10 +97,11 @@ def main():
             "sap-24g",
             c,
             "-i", str(Path(__file__).parent / "csvs"),
-            #"-t", t,
             "-m", mode,
             "-s", s_arg
         ]
+        if task != "all":
+            args += ["-t", t]
         if fold != "all":
             args += ["-f", str(fold)]
         run(args)
