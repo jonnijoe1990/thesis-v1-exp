@@ -42,6 +42,8 @@ def run(dataset, config):
     training_params = {
         k: v for k, v in config.framework_params.items() if not k.startswith("_")
     }
+    # Keep bagged fold artifacts to prevent an exception during refit_full.
+    training_params["_save_bag_folds"] = True
 
     if callback_settings := training_params.get("callbacks", {}):
         training_params["callbacks"] = initialize_callbacks(callback_settings)
