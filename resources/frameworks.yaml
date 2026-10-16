@@ -12,6 +12,7 @@ AutoGluon:
   params:
     presets: good_quality
     refit_full: false
+    set_best_to_refit_full: false
     #_save_artifacts: ['leaderboard', 'models', 'info']
 
 flaml:
