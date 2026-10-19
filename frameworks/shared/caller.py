@@ -1,4 +1,3 @@
-import gc
 import logging
 import os
 import pathlib
@@ -12,7 +11,7 @@ from amlb.benchmark import TaskConfig
 from amlb.data import Dataset
 from amlb.resources import config as rconfig
 from amlb.results import NoResultError, save_predictions
-from amlb.utils import json_dump, Namespace
+from amlb.utils import Namespace, json_dump, release_os_memory
 
 from .utils import (
     Namespace as ns,
@@ -84,7 +83,8 @@ def _make_input_dataset(
 
     ds = ns.walk(input_data, make_path)
     dataset.release()
-    gc.collect()
+    # This process trains every fold. Trim the dataset heap before fit.
+    release_os_memory()
     return ds
 
 
