@@ -127,7 +127,6 @@ RUN apt-get update
 RUN apt-get -y install apt-utils dialog locales tzdata sudo
 RUN apt-get -y install curl wget unzip git ca-certificates
 RUN apt-get -y install libhdf5-serial-dev
-RUN apt-get -y install build-essential
 
 COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
 # Keep the interpreter outside /root so a non-root `docker run -u` can execute it.
