@@ -150,6 +150,7 @@ WORKDIR /bench
 RUN uv venv --python {pyv} --seed /bench/venv
 ENV PIP='/bench/venv/bin/python -m pip'
 ENV PY='/bench/venv/bin/python -W ignore'
+RUN $PIP install -U pip wheel
 
 VOLUME /input
 VOLUME /output
