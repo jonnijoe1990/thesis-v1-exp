@@ -125,14 +125,18 @@ class DockerBenchmark(ContainerBenchmark):
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get -y install apt-utils dialog locales tzdata sudo
-RUN apt-get -y install curl wget unzip git ca-certificates
+RUN apt-get -y install curl wget unzip git
+RUN apt-get -y install software-properties-common
+RUN add-apt-repository -y ppa:deadsnakes/ppa
+RUN apt-get update
+RUN apt-get -y install python{pyv} python{pyv}-venv python{pyv}-dev python3-pip
 RUN apt-get -y install libhdf5-serial-dev
 
-COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
-# Keep the interpreter outside /root so a non-root `docker run -u` can execute it.
-ENV UV_PYTHON_INSTALL_DIR=/opt/uv-python
-
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# aliases for the python system
+ENV SPIP='python{pyv} -m pip'
+ENV SPY='python{pyv}'
 
 # Enforce UTF-8 encoding
 ENV PYTHONUTF8=1
@@ -143,12 +147,14 @@ ENV LC_ALL=C.UTF-8
 # Setup HDF5 for installing `tables`
 ENV HDF5_DIR='/usr/lib/aarch64-linux-gnu/hdf5/serial'
 
-# Driver venv before ADD, so uv does not read pyproject.toml.
-# --seed installs pip; framework venvs are still created later with `python -m venv`.
 WORKDIR /bench
-RUN uv venv --python {pyv} --seed /bench/venv
-ENV PIP='/bench/venv/bin/python -m pip'
-ENV PY='/bench/venv/bin/python -W ignore'
+
+# We create a virtual environment so that AutoML systems may use their preferred versions of
+# packages that we need to data pre- and postprocessing without breaking it.
+RUN $SPIP install -U pip wheel
+RUN $SPY -m venv venv
+ENV PIP='/bench/venv/bin/python{pyv} -m pip'
+ENV PY='/bench/venv/bin/python{pyv} -W ignore'
 RUN $PIP install -U pip wheel
 
 VOLUME /input
