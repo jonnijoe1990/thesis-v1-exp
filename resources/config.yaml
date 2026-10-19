@@ -100,7 +100,7 @@ openml:                # configuration namespace for openML.
 
 versions:              # configuration namespace for versions enforcement (libraries versions are usually enforced in requirements.txt for the app and for each framework).
   pip:
-  python: 3.11         # Minor version for containers and for each framework virtual environment.
+  python: "3.10"       # Minor version for containers and for each framework virtual environment.
 
 container: &container          # parent configuration namespace for container modes.
   minimize_instances: true     # set to true to avoid running multiple container instances on the same machine.
