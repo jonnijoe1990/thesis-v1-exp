@@ -1,4 +1,3 @@
-import gc
 import logging
 import os
 import shutil
@@ -34,38 +33,6 @@ log = logging.getLogger(__name__)
 
 
 def run(dataset, config):
-    try:
-        return _run_autogluon(dataset, config)
-    finally:
-        # good_quality leaves Ray up. kill -9 of raylet does not free /dev/shm.
-        _shutdown_ray()
-
-
-def _shutdown_ray():
-    gc.collect()
-    try:
-        import ray
-    except ImportError:
-        return
-    try:
-        initialized = ray.is_initialized()
-    except Exception:
-        log.warning("Could not query Ray.", exc_info=True)
-        return
-    if not initialized:
-        return
-    log.info("Shutting down Ray so the next fold starts with the same memory.")
-    try:
-        ray.shutdown()
-    except Exception:
-        log.warning(
-            "Ray shutdown failed. Leftover processes will be killed.",
-            exc_info=True,
-        )
-    gc.collect()
-
-
-def _run_autogluon(dataset, config):
     log.info(f"\n**** AutoGluon [v{__version__}] ****\n")
 
     problem_type = dataset.problem_type

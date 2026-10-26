@@ -42,7 +42,6 @@ from .utils import (
     repr_def,
     run_cmd,
     run_script,
-    cleanup_between_folds,
     signal_handler,
     str2bool,
     str_sanitize,
@@ -631,10 +630,9 @@ class TaskConfig:
             else sys_mem.available
         )
         log.info(
-            "Assigning %.f MB (total=%.f MB, available=%.f MB) for new %s task.",
+            "Assigning %.f MB (total=%.f MB) for new %s task.",
             assigned_mem,
             sys_mem.total,
-            sys_mem.available,
             self.name,
         )
         self.max_mem_size_mb = assigned_mem
@@ -790,28 +788,21 @@ class BenchmarkTask:
 
         result = meta_result = None
         try:
-            try:
-                log.info(
-                    "Running task %s on framework %s with config:\n%s",
-                    task_config.name,
-                    self.benchmark.framework_name,
-                    task_config,
-                )
-                json_dump(task_config, task_config.output_metadata_file, style="pretty")
-                meta_result = self.benchmark.framework_module.run(
-                    self._dataset, task_config
-                )
-            except Exception as e:
-                if rconfig().job_scheduler.exit_on_job_failure:
-                    raise
-                log.exception(e)
-                result = ErrorResult(e)
-            finally:
-                self._dataset.release()
-            return results.compute_score(result=result, meta_result=meta_result)
+            log.info(
+                "Running task %s on framework %s with config:\n%s",
+                task_config.name,
+                self.benchmark.framework_name,
+                task_config,
+            )
+            json_dump(task_config, task_config.output_metadata_file, style="pretty")
+            meta_result = self.benchmark.framework_module.run(
+                self._dataset, task_config
+            )
+        except Exception as e:
+            if rconfig().job_scheduler.exit_on_job_failure:
+                raise
+            log.exception(e)
+            result = ErrorResult(e)
         finally:
-            # The next fold's memory check runs in this same process.
-            try:
-                cleanup_between_folds()
-            except Exception:
-                log.exception("Fold cleanup failed.")
+            self._dataset.release()
+        return results.compute_score(result=result, meta_result=meta_result)

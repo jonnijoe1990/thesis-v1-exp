@@ -14,7 +14,6 @@ from .utils import (
     json_dump,
     json_loads,
     kill_proc_tree,
-    reap_ray_runtime,
     touch,
 )
 from .utils import deserialize_data, serialize_data, Timer
@@ -98,13 +97,8 @@ def call_run(run_fn):
         log.exception(e)
         res = dict(error_message=str(e), models_count=0)
     finally:
-        # Stop Ray leaves before raylet, then unlink /dev/shm. A SIGKILL of
-        # raylet alone keeps that memory for the rest of the container.
-        try:
-            kill_proc_tree(include_parent=False, timeout=5)
-            reap_ray_runtime()
-        except Exception:
-            log.exception("Framework subprocess cleanup failed.")
+        # ensure there's no subprocess left
+        kill_proc_tree(include_parent=False, timeout=5)
 
     inference_measurements = res.get("others", {}).get("inference_times")
     if inference_measurements:

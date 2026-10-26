@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import ctypes
 import gc
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
@@ -14,7 +13,6 @@ import platform
 import queue
 import re
 import select
-import shutil
 import signal
 import stat
 import subprocess
@@ -371,250 +369,31 @@ def get_process(pid=None):
     return psutil.Process(pid) if psutil.pid_exists(pid) else None
 
 
-def _alive(proc):
-    try:
-        return proc.is_running() and proc.status() != psutil.STATUS_ZOMBIE
-    except psutil.Error:
-        return False
-
-
-def _reap_zombies():
-    """Reap children the killed parent did not wait for. Zombies hold no RAM."""
-    if os.name == "nt":
-        return
-    while True:
-        try:
-            pid, _status = os.waitpid(-1, os.WNOHANG)
-        except ChildProcessError:
-            return
-        if pid == 0:
-            return
-
-
-def _terminate_processes(procs, timeout=None, on_terminate=None):
-    """Stop ``procs``, leaves first, then wait until each one has exited.
-
-    Signalling a Ray parent and its workers in one shot makes the workers
-    zombies and SIGKILLs ``raylet`` before it can unlink ``/dev/shm``.
-    """
-
+def kill_proc_tree(pid=None, include_parent=True, timeout=None, on_terminate=None):
     def on_proc_terminated(proc):
         log.info("Process %s terminated with exit code %s", proc, proc.returncode)
         if on_terminate is not None:
             on_terminate(proc)
 
-    pending = []
-    seen = set()
-    for proc in procs:
-        if proc is None or proc.pid in seen:
-            continue
-        seen.add(proc.pid)
-        pending.append(proc)
-
-    stopped = 0
-    while pending:
-        roots = {proc.pid for proc in pending}
-        leaves = []
-        for proc in pending:
-            try:
-                child_pids = {child.pid for child in proc.children(recursive=False)}
-            except psutil.Error:
-                child_pids = set()
-            if not child_pids & roots:
-                leaves.append(proc)
-        if not leaves:
-            leaves = list(pending)
-
-        for proc in leaves:
-            if not _alive(proc):
-                continue
-            log.warning("Terminating process %s.", proc)
-            try:
-                proc.terminate()
-            except psutil.NoSuchProcess:
-                pass
-        _gone, alive = psutil.wait_procs(
-            leaves, timeout=timeout, callback=on_proc_terminated
-        )
-        for proc in alive:
-            if not _alive(proc):
-                continue
-            log.warning("Killing process %s.", proc)
-            try:
-                proc.kill()
-            except psutil.NoSuchProcess:
-                pass
-        psutil.wait_procs(alive, timeout=5)
-        _reap_zombies()
-
-        leaf_ids = {proc.pid for proc in leaves}
-        still_pending = []
-        for proc in pending:
-            if proc.pid not in leaf_ids:
-                still_pending.append(proc)
-                continue
-            if not _alive(proc):
-                stopped += 1
-        pending = still_pending
-    return stopped
-
-
-def kill_proc_tree(pid=None, include_parent=True, timeout=None, on_terminate=None):
     parent = get_process(pid)
-    if parent is None:
-        return 0
-    procs = parent.children(recursive=True)
+    children = parent.children(recursive=True)
     if include_parent:
-        procs.append(parent)
-    stopped = _terminate_processes(procs, timeout=timeout, on_terminate=on_terminate)
-    _reap_zombies()
-    return stopped
-
-
-def _running_in_container():
-    return os.path.exists("/.dockerenv") or os.path.exists("/run/.containerenv")
-
-
-def _is_ray_process(proc):
-    try:
-        name = proc.info.get("name") if getattr(proc, "info", None) else None
-        cmdline = proc.info.get("cmdline") if getattr(proc, "info", None) else None
-        if name is None:
-            name = proc.name()
-        if cmdline is None:
-            cmdline = proc.cmdline()
-    except (psutil.Error, OSError):
-        return False
-    blob = " ".join([name or "", *(cmdline or [])])
-    markers = (
-        "gcs_server",
-        "raylet",
-        "plasma_store",
-        "ray::",
-        "ray-dashboard",
-        "default_worker.py",
-        "ray.dashboard",
-        "ray._private.workers",
-        "ray/_private/workers",
-    )
-    return any(marker in blob for marker in markers)
-
-
-def _ray_processes():
-    me = os.getpid()
-    found = []
-    for proc in psutil.process_iter(["pid", "name", "cmdline"]):
-        if proc.pid == me:
-            continue
-        if _is_ray_process(proc):
-            found.append(proc)
-    return found
-
-
-def _path_size(path):
-    if os.path.isfile(path) or os.path.islink(path):
+        children.append(parent)
+    for proc in children:
+        log.warning("Terminating process %s.", proc)
         try:
-            return os.path.getsize(path)
-        except OSError:
-            return 0
-    total = 0
-    for dirpath, _dirnames, filenames in os.walk(path):
-        for name in filenames:
-            try:
-                total += os.path.getsize(os.path.join(dirpath, name))
-            except OSError:
-                pass
-    return total
-
-
-def _remove_path(path):
-    try:
-        if os.path.isdir(path) and not os.path.islink(path):
-            shutil.rmtree(path, ignore_errors=True)
-        else:
-            os.remove(path)
-    except OSError:
-        pass
-
-
-def _release_ray_ipc():
-    """Unlink Ray shared memory. It survives ``kill -9`` of ``raylet``."""
-    freed = 0
-    shm = "/dev/shm"
-    if os.path.isdir(shm):
-        for name in os.listdir(shm):
-            lower = name.lower()
-            if "ray" not in lower and "plasma" not in lower:
-                continue
-            path = os.path.join(shm, name)
-            freed += _path_size(path)
-            _remove_path(path)
-    ray_tmp = "/tmp/ray"
-    if os.path.isdir(ray_tmp):
-        freed += _path_size(ray_tmp)
-        shutil.rmtree(ray_tmp, ignore_errors=True)
-    return freed
-
-
-def reap_ray_runtime():
-    """Stop Ray processes and files left after a fold.
-
-    Inside a container the tmpfs is private, so a full sweep cannot hit a
-    Ray cluster outside this run. Local mode only stops our own children,
-    via ``kill_proc_tree``, and relies on ``ray.shutdown()``.
-    """
-    if not _running_in_container():
-        return 0
-    victims = _ray_processes()
-    stopped = _terminate_processes(victims, timeout=5) if victims else 0
-    freed = _release_ray_ipc()
-    if stopped or freed:
-        log.info(
-            "Ray cleanup: stopped %d process(es), freed %.0f MB of shared memory.",
-            stopped,
-            to_mb(freed),
-        )
-    remaining = [proc.pid for proc in _ray_processes() if _alive(proc)]
-    if remaining:
-        log.warning("Ray processes still alive after cleanup: %s", remaining)
-    return stopped
-
-
-def release_os_memory():
-    """Return freed heap pages to the OS.
-
-    The benchmark process lives for every fold. After it drops a dataset,
-    glibc keeps the arena mapped, so the next fold's memory check sees a
-    smaller ``MemAvailable`` than the first fold.
-    """
-    gc.collect()
-    if sys.platform == "win32":
-        return
-    try:
-        libc = ctypes.CDLL("libc.so.6")
-    except OSError:
-        return
-    trim = getattr(libc, "malloc_trim", None)
-    if trim is None:
-        return
-    trim.argtypes = [ctypes.c_size_t]
-    trim.restype = ctypes.c_int
-    trim(0)
-
-
-def cleanup_between_folds():
-    before = system_memory_mb()
-    stopped = reap_ray_runtime()
-    release_os_memory()
-    after = system_memory_mb()
-    log.info(
-        "Fold cleanup: stopped %d leftover process(es). "
-        "Available memory %.0f MB -> %.0f MB (total %.0f MB).",
-        stopped,
-        before.available,
-        after.available,
-        after.total,
+            proc.terminate()
+        except psutil.NoSuchProcess:
+            pass
+    terminated, alive = psutil.wait_procs(
+        children, timeout=timeout, callback=on_proc_terminated
     )
+    for proc in alive:
+        log.warning("Killing process %s.", proc)
+        try:
+            proc.kill()
+        except psutil.NoSuchProcess:
+            pass
 
 
 def call_in_subprocess(target, *args, **kwargs):
