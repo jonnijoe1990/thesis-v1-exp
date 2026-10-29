@@ -643,8 +643,7 @@ class FileConverter:
         sp = split_path(split._path)
         sp.extension = self.format
         target_path = path_from_split(sp)
-        if not os.path.isfile(target_path):
-            self._write_file(split.data, target_path)
+        self._write_file(split.data, target_path)
         return target_path
 
     @abstractmethod

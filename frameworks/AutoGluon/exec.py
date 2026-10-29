@@ -121,19 +121,19 @@ def run(dataset, config):
         if is_classification
         else inference_time_regression
     )
-    test_data = TabularDataset(test_path)
     inference_times = {}
     if config.measure_inference_time:
         inference_times["file"] = measure_inference_times(
             infer, dataset.inference_subsample_files
         )
+        test_data = pd.read_parquet(dataset.test.path)
         inference_times["df"] = measure_inference_times(
             infer,
             [(1, test_data.sample(1, random_state=i)) for i in range(100)],
         )
         log.info("Finished inference time measurements.")
 
-    y_test = test_data[label].to_numpy()
+    test_data = TabularDataset(test_path)
     with Timer() as predict:
         predictions, probabilities = infer(test_data)
     if is_classification:
@@ -185,7 +185,6 @@ def run(dataset, config):
     return result(
         output_file=config.output_predictions_file,
         predictions=predictions,
-        truth=y_test,
         probabilities=probabilities,
         probabilities_labels=prob_labels,
         target_is_encoded=False,
