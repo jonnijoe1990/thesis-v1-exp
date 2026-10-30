@@ -30,12 +30,13 @@ class ContainerBenchmark(Benchmark):
 
     @classmethod
     def image_name(cls, framework_def: Framework) -> str:
-        """Image name from the framework definition, without a branch or dev suffix."""
+        """Determines the image name based on configuration data."""
         di = framework_def.image
         author = di.author
         image = di.image if di.image else framework_def.name.lower()
         tag = di.tag if di.tag else framework_def.version.lower()
-        # A version like #HASH would make the tag start with '.', which is invalid.
+        # Some frameworks allow specifying a version by #HASH which would lead to
+        # the tag starting with a '.' which is invalid.
         tag = re.sub(r"([^\w.-])", ".", tag).lstrip(".")
         return f"{author}/{image}:{tag}"
 

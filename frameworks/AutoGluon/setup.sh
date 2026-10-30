@@ -39,7 +39,6 @@ else
     echo "Skipping 'skex' install as architecture is not 64-bit intel."
 fi
 
-# CPU torch: the PyPI Linux wheel pulls in the nvidia-* CUDA libraries.
 if [[ "$VERSION" == "stable" ]]; then
     $UV pip install --no-cache-dir -U --torch-backend=cpu "${PKG}"
     $UV pip install --no-cache-dir -U --torch-backend=cpu "${PKG}.tabular[${DEPENDENCIES}]"

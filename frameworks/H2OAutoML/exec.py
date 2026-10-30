@@ -343,9 +343,6 @@ def extract_preds(
     )
     y_truth = to_data_frame(h2o_truth)
 
-    # pandas 3 keeps strings in a PyArrow array. Series.values then returns
-    # that array, which the benchmark cannot serialize. to_numpy() gives a
-    # real ndarray for the labels, the probabilities, and the truth column.
     predictions = y_pred.to_numpy()
     probabilities = preds.iloc[:, 1:].to_numpy()
     prob_labels = h2o_labels = h2o_preds[0][1:]
