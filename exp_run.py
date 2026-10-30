@@ -3,8 +3,6 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
-db_path = Path(__file__).parent.joinpath("char_data.db").resolve()
-
 frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
 Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
 def select_framework() -> Framework:

@@ -1,7 +1,6 @@
 from sklearn.model_selection import train_test_split
 from pathlib import Path
 
-from exp_misc import db_path
 from exp_db import DB
 from exp_labels import select_label
 
@@ -9,6 +8,8 @@ out_dir = Path(__file__).parent.joinpath("csvs")
 out_dir.mkdir(exist_ok=True)
 folds = 5
 
+
+db_path = Path(__file__).parent.joinpath("char_data.db").resolve()
 label = select_label()
 if label is not None:
     with DB(db_path) as db:
