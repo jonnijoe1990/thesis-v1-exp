@@ -1,18 +1,3 @@
----
-#for doc purpose using <placeholder:default_value> syntax when it applies.
-
-# FORMAT:
-__dummy_framework_with_defaults:
-  version: ''
-  module: # defaults to `frameworks.framework_name`
-  setup_args: ''
-  params: {}
-  project: http://url/to/project/repo
-  image: # will result in built image `author/image:tag`
-    author: automlbenchmark
-    image:  # defaults to `framework name to lowercase`
-    tag:  # defaults to `framework version`
-
 #########################
 ### AutoML frameworks ###
 #########################
