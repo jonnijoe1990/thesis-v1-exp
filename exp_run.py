@@ -3,6 +3,8 @@ from typing import Literal
 from questionary import Choice, select
 from run import run
 
+db_path = Path(__file__).parent.joinpath("char_data.db").resolve()
+
 frameworks = ["AutoGluon", "flaml", "H2OAutoML", "all"]
 Framework = Literal["AutoGluon", "flaml", "H2OAutoML", "all"]
 def select_framework() -> Framework:
@@ -87,9 +89,11 @@ def main():
     if (mode is None):
         return
 
-    s_arg = select_s_arg()
-    if (s_arg is None):
-        return
+    s_arg = None
+    if mode == "docker":
+        s_arg = select_s_arg()
+        if (s_arg is None):
+            return
 
     def run_experiment(f: Framework, c: Constraint, t: Task):
         args = [
@@ -97,9 +101,10 @@ def main():
             "sap-24g",
             c,
             "-i", str(Path(__file__).parent / "csvs"),
-            "-m", mode,
-            "-s", s_arg
+            "-m", mode
         ]
+        if s_arg is not None:
+            args += ["-s", s_arg]
         if task != "all":
             args += ["-t", t]
         if fold != "all":
